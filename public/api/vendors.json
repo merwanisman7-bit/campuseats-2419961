@@ -1,0 +1,43 @@
+[
+  {
+    "id": "2419961-zubair",
+    "name": "Kafe Mahallah Zubair",
+    "location": "Mahallah Zubair, Ground Floor",
+    "openHours": "7:00 am - 10:00 pm",
+    "isOpen": true,
+    "menu": [
+      { "id": "2419961-m1", "name": "Nasi Lemak Ayam", "price": 7.5, "category": "Rice", "popular": true },
+      { "id": "2419961-m2", "name": "Nasi Goreng Kampung", "price": 6.5, "category": "Rice", "popular": false },
+      { "id": "2419961-m3", "name": "Nasi Ayam Penyet", "price": 9, "category": "Rice", "popular": true },
+      { "id": "2419961-m4", "name": "Mee Goreng", "price": 6, "category": "Noodles", "popular": true },
+      { "id": "2419961-m5", "name": "Maggi Goreng", "price": 5.5, "category": "Noodles", "popular": false },
+      { "id": "2419961-m6", "name": "Teh Tarik", "price": 2.5, "category": "Drinks", "popular": true },
+      { "id": "2419961-m7", "name": "Air Bandung", "price": 3, "category": "Drinks", "popular": false },
+      { "id": "2419961-m8", "name": "Milo Ais", "price": 2.5, "category": "Drinks", "popular": false }
+    ]
+  },
+  {
+    "id": "2419961-siddiq",
+    "name": "Kafe Mahallah Siddiq",
+    "location": "Mahallah Siddiq, Ground Floor",
+    "openHours": "8:00 am - 9:00 pm",
+    "isOpen": true,
+    "menu": [
+      { "id": "2419961-s1", "name": "Roti Canai", "price": 2, "category": "Breakfast", "popular": true },
+      { "id": "2419961-s2", "name": "Nasi Ayam Goreng", "price": 7, "category": "Rice", "popular": false },
+      { "id": "2419961-s3", "name": "Teh O Ais", "price": 2, "category": "Drinks", "popular": false }
+    ]
+  },
+  {
+    "id": "2419961-farouq",
+    "name": "Kafe Mahallah Farouq",
+    "location": "Mahallah Farouq, Ground Floor",
+    "openHours": "7:30 am - 9:30 pm",
+    "isOpen": false,
+    "menu": [
+      { "id": "2419961-f1", "name": "Mee Rebus", "price": 6, "category": "Noodles", "popular": true },
+      { "id": "2419961-f2", "name": "Nasi Kerabu", "price": 7.5, "category": "Rice", "popular": false },
+      { "id": "2419961-f3", "name": "Kopi O", "price": 2, "category": "Drinks", "popular": false }
+    ]
+  }
+]

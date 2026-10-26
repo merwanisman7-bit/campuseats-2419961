@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Header from './components/Header.jsx'
 import VendorCard from './components/VendorCard.jsx'
+import CategoryFilter from './components/CategoryFilter.jsx'
 import MenuList from './components/MenuList.jsx'
 import CartPage from './components/CartPage.jsx'
 import Footer from './components/Footer.jsx'
@@ -12,6 +13,7 @@ function App() {
   const [error, setError] = useState(null)
   const [reloadKey, setReloadKey] = useState(0)
   const [selectedVendorId, setSelectedVendorId] = useState(null)
+  const [selectedCategory, setSelectedCategory] = useState('All')
   const [cart, setCart] = useState([]) // lines: { item, qty }
   const [view, setView] = useState('menu') // 'menu' | 'cart' | 'done'
   const [lastOrder, setLastOrder] = useState(null)
@@ -39,6 +41,11 @@ function App() {
     setError(null)
     setLoading(true)
     setReloadKey((k) => k + 1)
+  }
+
+  function handleSelectVendor(vendorId) {
+    setSelectedVendorId(vendorId)
+    setSelectedCategory('All') // the new vendor may not have the old category
   }
 
   function handleAddToCart(item) {
@@ -89,12 +96,28 @@ function App() {
       />
     )
   } else if (view === 'done') {
-    content = <p>Order placed.</p> // B5 shows pickup time and total here
+    content = lastOrder && (
+      <div className="card">
+        <h2>Order placed</h2>
+        <p>
+          Thanks, {lastOrder.name}! Pick up at {lastOrder.pickupTime} from Mahallah{' '}
+          {lastOrder.mahallah}.
+        </p>
+        <p className="cart-total">Total: RM {lastOrder.total.toFixed(2)}</p>
+      </div>
+    )
   } else if (loading) {
     content = <Loading />
   } else if (error) {
     content = <ErrorMessage message={error} onRetry={handleRetry} />
   } else {
+    // Derived on every render, never stored in state.
+    const categories = ['All', ...new Set(selectedVendor.menu.map((item) => item.category))]
+    const visibleItems =
+      selectedCategory === 'All'
+        ? selectedVendor.menu
+        : selectedVendor.menu.filter((item) => item.category === selectedCategory)
+
     content = (
       <>
         <section>
@@ -105,14 +128,19 @@ function App() {
                 key={vendor.id}
                 vendor={vendor}
                 isSelected={vendor.id === selectedVendor.id}
-                onSelect={setSelectedVendorId}
+                onSelect={handleSelectVendor}
               />
             ))}
           </div>
         </section>
         <section>
           <h2 className="section-title">Menu: {selectedVendor.name}</h2>
-          <MenuList items={selectedVendor.menu} onAdd={handleAddToCart} />
+          <CategoryFilter
+            categories={categories}
+            active={selectedCategory}
+            onSelect={setSelectedCategory}
+          />
+          <MenuList items={visibleItems} onAdd={handleAddToCart} />
         </section>
       </>
     )

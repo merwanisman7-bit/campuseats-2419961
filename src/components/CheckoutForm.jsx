@@ -10,7 +10,6 @@ function validate(values) {
   if (!values.mahallah) {
     errors.mahallah = 'Choose your mahallah.'
   }
- 
   if (values.pickupTime < '07:00' || values.pickupTime > '22:00') {
     errors.pickupTime = 'Choose a pickup time between 07:00 and 22:00.'
   }
@@ -21,14 +20,13 @@ function CheckoutForm({ onPlaceOrder }) {
   const [values, setValues] = useState({ name: '', mahallah: '', pickupTime: '' })
   const [errors, setErrors] = useState({})
 
-  
   function handleChange(event) {
     const { name, value } = event.target
     setValues((prev) => ({ ...prev, [name]: value }))
   }
 
   function handleSubmit(event) {
-    event.preventDefault() 
+    event.preventDefault()
     const found = validate(values)
     setErrors(found)
     if (Object.keys(found).length === 0) {

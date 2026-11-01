@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useVendors } from './hooks/useVendors.js'
 import Header from './components/Header.jsx'
 import VendorCard from './components/VendorCard.jsx'
 import CategoryFilter from './components/CategoryFilter.jsx'
@@ -8,44 +9,16 @@ import Footer from './components/Footer.jsx'
 import { Loading, ErrorMessage } from './components/Status.jsx'
 
 function App() {
-  const [vendors, setVendors] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [reloadKey, setReloadKey] = useState(0)
+  const { vendors, loading, error, reload } = useVendors()
   const [selectedVendorId, setSelectedVendorId] = useState(null)
   const [selectedCategory, setSelectedCategory] = useState('All')
-  const [cart, setCart] = useState([]) // lines: { item, qty }
-  const [view, setView] = useState('menu') // 'menu' | 'cart' | 'done'
+  const [cart, setCart] = useState([])
+  const [view, setView] = useState('menu')
   const [lastOrder, setLastOrder] = useState(null)
-
-  useEffect(() => {
-    const controller = new AbortController()
-
-    fetch('/api/vendors.json', { signal: controller.signal })
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`)
-        return res.json()
-      })
-      .then(setVendors)
-      .catch((err) => {
-        if (err.name !== 'AbortError') setError(err.message)
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) setLoading(false)
-      })
-
-    return () => controller.abort()
-  }, [reloadKey])
-
-  function handleRetry() {
-    setError(null)
-    setLoading(true)
-    setReloadKey((k) => k + 1)
-  }
 
   function handleSelectVendor(vendorId) {
     setSelectedVendorId(vendorId)
-    setSelectedCategory('All') // the new vendor may not have the old category
+    setSelectedCategory('All')
   }
 
   function handleAddToCart(item) {
@@ -109,9 +82,8 @@ function App() {
   } else if (loading) {
     content = <Loading />
   } else if (error) {
-    content = <ErrorMessage message={error} onRetry={handleRetry} />
+    content = <ErrorMessage message={error} onRetry={reload} />
   } else {
-    // Derived on every render, never stored in state.
     const categories = ['All', ...new Set(selectedVendor.menu.map((item) => item.category))]
     const visibleItems =
       selectedCategory === 'All'

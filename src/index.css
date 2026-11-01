@@ -26,7 +26,6 @@ a {
   text-decoration: none;
 }
 
-/* Header */
 .header {
   display: flex;
   justify-content: space-between;
@@ -64,7 +63,6 @@ a {
   text-align: center;
 }
 
-/* Layout */
 .container {
   max-width: 960px;
   margin: 0 auto;
@@ -88,7 +86,6 @@ a {
   gap: 1rem;
 }
 
-/* Cards */
 .card {
   background: var(--card);
   border: 2px solid var(--border);

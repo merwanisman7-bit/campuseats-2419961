@@ -1,4 +1,3 @@
-// Shows one button per category. It owns no state: App tells it which one is active.
 function CategoryFilter({ categories, active, onSelect }) {
   return (
     <div className="filters">

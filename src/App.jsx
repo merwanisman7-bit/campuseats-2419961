@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useVendors } from './hooks/useVendors.js'
+import { CartProvider } from './context/CartProvider.jsx'
 import Header from './components/Header.jsx'
 import VendorCard from './components/VendorCard.jsx'
 import CategoryFilter from './components/CategoryFilter.jsx'
@@ -12,7 +13,6 @@ function App() {
   const { vendors, loading, error, reload } = useVendors()
   const [selectedVendorId, setSelectedVendorId] = useState(null)
   const [selectedCategory, setSelectedCategory] = useState('All')
-  const [cart, setCart] = useState([])
   const [view, setView] = useState('menu')
   const [lastOrder, setLastOrder] = useState(null)
 
@@ -21,53 +21,16 @@ function App() {
     setSelectedCategory('All')
   }
 
-  function handleAddToCart(item) {
-    setCart((prev) => {
-      const existing = prev.find((line) => line.item.id === item.id)
-      if (existing) {
-        return prev.map((line) =>
-          line.item.id === item.id ? { ...line, qty: line.qty + 1 } : line
-        )
-      }
-      return [...prev, { item, qty: 1 }]
-    })
-  }
-
-  function handleChangeQty(itemId, delta) {
-    setCart((prev) =>
-      prev
-        .map((line) =>
-          line.item.id === itemId ? { ...line, qty: line.qty + delta } : line
-        )
-        .filter((line) => line.qty > 0)
-    )
-  }
-
-  function handleRemove(itemId) {
-    setCart((prev) => prev.filter((line) => line.item.id !== itemId))
-  }
-
-  function handlePlaceOrder(details) {
-    const total = cart.reduce((sum, line) => sum + line.item.price * line.qty, 0)
-    setLastOrder({ ...details, total })
-    setCart([])
+  function handleOrderPlaced(order) {
+    setLastOrder(order)
     setView('done')
   }
-
-  const cartCount = cart.reduce((sum, line) => sum + line.qty, 0)
 
   const selectedVendor = vendors.find((v) => v.id === selectedVendorId) ?? vendors[0]
 
   let content
   if (view === 'cart') {
-    content = (
-      <CartPage
-        cart={cart}
-        onChangeQty={handleChangeQty}
-        onRemove={handleRemove}
-        onPlaceOrder={handlePlaceOrder}
-      />
-    )
+    content = <CartPage onOrderPlaced={handleOrderPlaced} />
   } else if (view === 'done') {
     content = lastOrder && (
       <div className="card">
@@ -112,22 +75,18 @@ function App() {
             active={selectedCategory}
             onSelect={setSelectedCategory}
           />
-          <MenuList items={visibleItems} onAdd={handleAddToCart} />
+          <MenuList items={visibleItems} />
         </section>
       </>
     )
   }
 
   return (
-    <>
-      <Header
-        cartCount={cartCount}
-        onShowMenu={() => setView('menu')}
-        onShowCart={() => setView('cart')}
-      />
+    <CartProvider>
+      <Header onShowMenu={() => setView('menu')} onShowCart={() => setView('cart')} />
       <main className="container">{content}</main>
       <Footer />
-    </>
+    </CartProvider>
   )
 }
 
